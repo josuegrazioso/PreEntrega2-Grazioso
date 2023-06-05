@@ -1,38 +1,103 @@
-// Definición de los productos iniciales
-var productos = [
-    { nombre: "Remera", precio: 5700 },
-    { nombre: "Pantalón", precio: 7200 },
-    { nombre: "Buzo", precio: 9500}
-  ];
+class Carrito {
+    constructor() {
+      this.productos = [];
+    }
   
-  // Función para mostrar los productos disponibles
-  function mostrarProductos() {
-    console.log("Productos disponibles:");
-    for (var i = 0; i < productos.length; i++) {
-      console.log(i + 1 + ". " + productos[i].nombre + " - Precio: $" + productos[i].precio);
+    agregarProducto(nombreProducto, precioProducto) {
+      this.productos.push({ id: this.generarId(), nombre: nombreProducto.toLocaleUpperCase(), precio: precioProducto });
+      alert("¡Agregaste un Producto!");
+    }
+  
+    eliminarProducto(id) {
+      this.productos = this.productos.filter(item => item.id !== id);
+      alert("¡Eliminaste un Producto!");
+    }
+  
+    totalProductos() {
+      return this.productos.length;
+    }
+  
+    sumaTotal() {
+      return this.productos.reduce((total, item) => total + item.precio, 0);
+    }
+  
+    generarId() {
+      let max = 0;
+  
+      this.productos.forEach(item => {
+        if (item.id > max) {
+          max = item.id;
+        }
+      });
+  
+      return max + 1;
+    }
+  
+    listarProductos() {
+      let contenido = "Productos agregados:\n\n";
+  
+      this.productos.forEach(item => {
+        contenido += `${item.id} - ${item.nombre} $${item.precio}\n`
+      });
+  
+      return contenido;
     }
   }
   
-  // Función para agregar un producto al carrito
-  function agregarProducto(carrito, indice) {
-    var producto = productos[indice];
-    carrito.push(producto);
-    console.log(producto.nombre + " agregado al carrito.");
+  let nombre = "";
+  const carrito = new Carrito();
+  
+  // Lista de productos y precios
+  const listaProductos = "1- Remera Precio: $5300\n2- Pantalón Precio: $7800\n3- Buzo Precio: $10600";
+  alert("Lista de productos y precios:\n\n" + listaProductos);
+  
+  // Agregamos Productos
+  while (nombre.toLocaleUpperCase() !== "SALIR") {
+    nombre = prompt("Ingrese el Nombre del Producto: (REMERA, PANTALON, BUZO)\n\n(ESCRIBA SALIR PARA TERMINAR DE SELECCIONAR PRODUCTOS)");
+  
+    if (nombre.toLocaleUpperCase() === "SALIR") {
+      break;
+    }
+  
+    let precio;
+    switch (nombre.toLocaleLowerCase()) {
+      case "remera":
+        precio = 5300;
+        break;
+      case "pantalon":
+        precio = 7800;
+        break;
+      case "buzo":
+        precio = 10600;
+        break;
+      default:
+        alert("Producto no válido. Intente nuevamente.");
+        continue;
+    }
+  
+    carrito.agregarProducto(nombre, precio);
   }
   
-  // Creación del carrito vacío
-  var carrito = [];
+  // Validar si mi Carrito tiene Productos
+  if (carrito.totalProductos() > 0) {
+    let id;
   
-  // Mostrar los productos disponibles inicialmente
-  mostrarProductos();
+    // Eliminar Productos
+    while (id !== 0) {
+      id = parseInt(prompt(carrito.listarProductos() + "\nIngrese el numero del Producto a Eliminar:\n(ESCRIBIR 0 PARA SALIR)"));
   
-  // Agregar productos al carrito
-  agregarProducto(carrito, 0); // Agregar el Producto 1
-  agregarProducto(carrito, 2); // Agregar el Producto 3
+      if (id > 0) {
+        carrito.eliminarProducto(id);
+      }
   
-  // Mostrar los productos en el carrito
-  console.log("Productos en el carrito:");
-  for (var i = 0; i < carrito.length; i++) {
-    console.log(i + 1 + ". " + carrito[i].nombre + " - Precio: $" + carrito[i].precio);
+      if (carrito.totalProductos() === 0) {
+        break;
+      }
+    }
+  
+    // Informar el Total de Productos agregados
+    alert(`${carrito.listarProductos()}\nTotal a Pagar: $${carrito.sumaTotal()}`);
+  } else {
+    alert("No se encontraron Productos agregados en el Carrito!");
   }
   
